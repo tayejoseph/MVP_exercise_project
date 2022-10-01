@@ -73,7 +73,7 @@ export default Styled.div`
         padding-left:  ${({ theme }) => theme.dimensions.sideNavWidth};
             transition: all 0.5s;
         ${({ showMenu }) =>
-          showMenu &&
+          !showMenu &&
           css`
             padding-left: 0px;
           `}
@@ -85,7 +85,7 @@ export default Styled.div`
             transition: all 0.5s;
        
             ${({ showMenu }) =>
-              showMenu &&
+              !showMenu &&
               css`
                 transform: ${({ theme }) =>
                   `translateX(-${theme.dimensions.sideNavWidth})`};
@@ -133,7 +133,7 @@ export default Styled.div`
         padding-left:  ${({ theme }) => theme.dimensions.sideNavWidth};
             transition: all 0.5s;
         ${({ showMenu }) =>
-          showMenu &&
+          !showMenu &&
           css`
             padding-left: 0px;
           `}

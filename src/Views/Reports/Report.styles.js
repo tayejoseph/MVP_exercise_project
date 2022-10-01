@@ -45,7 +45,7 @@ export default Styled.div`
             align-items: center;
             grid-gap: 1em;
 
-            ${maxQuery('lg')} {
+            ${maxQuery('xl')} {
                 flex-wrap: wrap;
             }
 
@@ -84,7 +84,7 @@ export default Styled.div`
         display: flex;
         grid-gap: 2em;
 
-        ${maxQuery('lg')} {
+        ${maxQuery('xl')} {
             flex-direction: column;
             grid-gap: 3em;
         }
@@ -165,7 +165,9 @@ export default Styled.div`
                     border: none;
                     width: 100%;
                     border-collapse: collapse;
-                    min-width: 55rem;
+                    ${maxQuery('xl')} {
+                        min-width: 55rem;
+                    }
                     th, td {
                         text-align: center;
                         color: #011F4B;
