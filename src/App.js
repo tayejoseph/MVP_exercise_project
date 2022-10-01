@@ -1,24 +1,45 @@
-import logo from './logo.svg'
-import './App.css'
+import React, { useEffect } from 'react'
+import { Route, useLocation, Switch, Redirect } from 'react-router-dom'
+import { ThemeProvider } from 'styled-components'
+import { SkeletonTheme } from 'react-loading-skeleton'
+import { IconContext } from 'react-icons'
+import theme from 'base/theme'
+import { Reports } from 'Views'
+import GlobalStyle from 'base/globalStyles'
+import { Dashboard } from 'Layout'
 
-function App() {
+const ScrollToTop = () => {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+  }, [pathname])
+
+  return null
+}
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <SkeletonTheme baseColor="#202020" highlightColor="#444">
+        <IconContext.Provider
+          value={{
+            className: 'icon',
+            style: { verticalAlign: 'middle' },
+          }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <Dashboard>
+            <Switch>
+              <Route path={'/report'} component={Reports} />
+              <Route path={'*'}>
+                <Redirect to="/report" />
+              </Route>
+            </Switch>
+          </Dashboard>
+        </IconContext.Provider>
+      </SkeletonTheme>
+      <ScrollToTop />
+    </ThemeProvider>
   )
 }
 
