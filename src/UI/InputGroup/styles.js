@@ -105,5 +105,21 @@ export default Styled.div`
     padding: 1em;
     resize: none;
   }
+
+  div.input-container {
+    position: relative;
+
+    span {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.8rem;
+      color: #fff;
+      padding-left: 0.5em;
+    }
+    input {
+      padding-left: 3em;
+    }
+  }
   
 `

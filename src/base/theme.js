@@ -17,12 +17,12 @@ export const BREAKPOINTS = {
 }
 
 const theme = {
-  primary: '#3772FF',
+  primary: '#1BC5BD',
+  secondary: '#005B96',
   tertiary: '#1BC5BD',
   colors,
   dimensions,
   fontFamily: "'Roboto', sans-serif",
-  secondary: '#BA390C',
 }
 
 export default theme

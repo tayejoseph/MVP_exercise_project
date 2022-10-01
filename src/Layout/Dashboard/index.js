@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
+import { axios } from 'lib'
 import {
   AppLogo,
   BarChart,
@@ -38,23 +39,50 @@ const bottomNavLinks = [
   { title: 'Terms & Condition', route: '/terms&Condition' },
   { title: 'Privacy Policy', route: '/privacy-policy' },
 ]
+
 const Dashboard = ({ children }) => {
+  const [userData, setUserData] = useState(null)
+  const [showMenu, setDisplay] = useState(true)
+
+  useEffect(() => {
+    const handleGetUser = async () => {
+      const { data: response } = await axios.get('/users')
+      if (response?.data) {
+        setUserData(response.data[0])
+      }
+    }
+    handleGetUser()
+  }, [])
+
   return (
-    <Container>
+    <Container showMenu={showMenu}>
       <div className="dashboard-top_nav">
         <div className="col-1">
           <Link to="/" className="brand-logo">
             <AppLogo />
           </Link>
-          <button aria-label="menu" className="menu-btn">
+          <button
+            aria-label={showMenu ? 'hide menu' : 'show menu'}
+            className="menu-btn"
+            onClick={() => setDisplay((s) => !s)}
+          >
             <AppMenu />
           </button>
         </div>
         <div className="col-2">
-          <div className="profile-name">
-            <p>JD</p>
-          </div>
-          <p>John Doe</p>
+          {userData && (
+            <>
+              <div className="profile-name">
+                <p>
+                  {userData.firstName[0]}
+                  {userData.lastName[0]}
+                </p>
+              </div>
+              <p>
+                {userData.firstName} {userData.lastName}
+              </p>
+            </>
+          )}
         </div>
       </div>
       <div className="dashboard-row">

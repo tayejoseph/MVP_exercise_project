@@ -1,129 +1,208 @@
-import React, { useEffect, useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { axios } from 'lib'
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts'
 import Container from './Report.styles'
 import { toMoney } from 'helpers'
-import { InputGroup, Button } from 'UI'
+import moment from 'moment'
+import { Spinner } from 'UI'
+import ReportAnalysis from './Components/ReportAnalysis'
+import ReportFilter from './Components/ReportFilter'
+import ReportTitle from './Components/ReportTitle'
+import EmptyReport from './Components/EmptyReport'
 
-const data = [
-  { name: 'Group A', value: 400 },
-  { name: 'Group B', value: 300 },
-  { name: 'Group C', value: 300 },
-  { name: 'Group D', value: 200 },
-]
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
+const initfilterData = {
+  gatewayId: '',
+  projectId: '',
+  from: '2021-01-01',
+  to: '2021-12-31',
+}
+
+const validateReportQuery = (filterData) => {
+  const { projectId, gatewayId } = filterData
+
+  if (!projectId && !gatewayId)
+    return 'You need to select a project and gateway before a report can be generated'
+  else if (!projectId)
+    return 'You need to select a project before a report can be generated'
+  else if (!gatewayId)
+    return 'You need to select a gateway before the report can be generated'
+}
 
 const Reports = () => {
-  const [getWayLists, setGateWayLists] = useState(null)
-  const [projectLists, setProjectLists] = useState(null)
-  const [total, setTotal] = useState(0)
-  const [tableLists, setTableLists] = useState(null)
+  const [{ gateWayLists, projectLists }, setApiData] = useState({
+    gateWayLists: null,
+    projectLists: null,
+    userLists: null,
+  })
+
   const [loading, setLoading] = useState(false)
   const [activeProjectKey, setActiveProjectKey] = useState('')
-  const [formData, setFormData] = useState({
-    gatewayId: '',
-    projectId: '',
-    from: '2021-01-01',
-    to: '2021-12-31',
+
+  const [filterData, setFilterData] = useState(initfilterData)
+  const [reportData, setReportData] = useState({
+    errorMessage: '',
+    activeProject: '',
+    activeGateWay: '',
+    total: 0,
+    reportLists: null,
   })
 
   const handleInput = ({ target: { value, name } }) => {
-    setFormData((s) => ({
+    if (reportData.errorMessage)
+      setReportData((s) => ({
+        ...s,
+        errorMessage: '',
+      }))
+    setFilterData((s) => ({
       ...s,
       [name]: value,
     }))
   }
 
-  const handleGetProjectLists = async () => {
-    const { data: response } = await axios.get('/projects')
-    if (response.code === '200') {
-      setProjectLists(response.data)
-    }
+  const initiateApi = async () => {
+    const getProjectLists = () => axios.get('/projects')
+    const getGateWay = () => axios.get('/gateways')
+
+    Promise.all([getProjectLists(), getGateWay()]).then((results) => {
+      const [projectData, gateWayData] = results
+      setApiData({
+        gateWayLists: gateWayData?.data?.data || [],
+        projectLists: projectData?.data?.data || [],
+      })
+    })
   }
 
-  const handleGetGateWay = async () => {
-    const { data: response } = await axios.get('/gateways')
+  const handleGenerateReport = useCallback(
+    (filterData) => {
+      const getReport = async () => {
+        const { gatewayId, projectId, from, to } = filterData
 
-    if (response.code === '200') {
-      setGateWayLists(response.data)
-    }
-  }
+        let errorMessage = validateReportQuery(filterData)
 
-  const handleGenerateReport = useCallback(() => {
-    const getReport = async () => {
-      setLoading(true)
-      const { data: response } = await axios.post('/report', formData)
-      setLoading(false)
-      let total = 0
-      const formatedData = {}
-      response.data.map((item) => {
-        const gateWayData =
-          getWayLists.find((data) => data.gatewayId === item.gatewayId) || {}
-        total += item.amount
+        if (!moment(from).isBefore(to)) {
+          errorMessage = 'Your start date should be before the end date'
+        }
 
-        if (formData.projectId && !formData.gatewayId) {
-          if (formatedData[item.gatewayId]?.gateWays) {
-            formatedData[item.gatewayId] = {
-              ...gateWayData,
-              gateWays: [...formatedData[item.gatewayId].gateWays, item],
-              total: formatedData[item.gatewayId].total + item.amount,
+        if (errorMessage) {
+          setReportData((s) => ({
+            ...s,
+            errorMessage,
+          }))
+          return
+        }
+
+        setLoading(true)
+
+        const { data: response } = await axios.post('/report', {
+          ...filterData,
+          projectId: projectId === 'all' ? '' : projectId,
+          gatewayId: gatewayId === 'all' ? '' : gatewayId,
+        })
+
+        setLoading(false)
+        let total = 0
+        const formatedData = {}
+        response.data.forEach((item) => {
+          total += item.amount
+          if (projectId === 'all') {
+            formatedData[item.projectId] = {
+              ...(formatedData[item.projectId] || {}),
+              transactionsLists: [
+                ...(formatedData[item.projectId]?.transactionsLists || []),
+                {
+                  ...item,
+                  gateWayData: gateWayLists.find(
+                    (data) => data.gatewayId === item.gatewayId,
+                  ),
+                },
+              ],
+              total: (formatedData[item.projectId]?.total || 0) + item.amount,
             }
-          } else {
-            formatedData[item.gatewayId] = {
-              ...gateWayData,
-              total: item.amount,
-              gateWays: [item],
+            if (!formatedData[item.projectId]?.name) {
+              formatedData[item.projectId] = {
+                ...formatedData[item.projectId],
+                ...(projectLists.find(
+                  (data) => data.projectId === item.projectId,
+                ) || {}),
+              }
             }
-          }
-        } else {
-          if (formatedData[item.projectId]) {
-            formatedData[item.projectId].total =
-              formatedData[item.projectId].total + item.amount
-            formatedData[item.projectId].transactions = [
-              ...formatedData[item.projectId].transactions,
-              { ...item, gateWayData },
-            ]
+          } else if (gatewayId === 'all') {
+            formatedData[item.gatewayId] = {
+              ...(formatedData[item.gatewayId] || {}),
+              transactionsLists: [
+                ...(formatedData[item.gatewayId]?.transactionsLists || []),
+                item,
+              ],
+              total: (formatedData[item.gatewayId]?.total || 0) + item.amount,
+            }
+            if (!formatedData[item.gatewayId]?.name) {
+              formatedData[item.gatewayId] = {
+                ...formatedData[item.gatewayId],
+                ...(gateWayLists.find(
+                  (data) => data.gatewayId === item.gatewayId,
+                ) || {}),
+              }
+            }
           } else {
             formatedData[item.projectId] = {
-              total: item.amount,
-              transactions: [{ ...item, gateWayData }],
-              projectId: item.projectId,
-              name:
-                projectLists.find((data) => data.projectId === item.projectId)
-                  ?.name || '',
+              ...(formatedData[item.projectId] || {}),
+              transactionsLists: [
+                ...(formatedData[item.projectId]?.transactionsLists || []),
+                item,
+              ],
+              total: (formatedData[item.projectId]?.total || 0) + item.amount,
+            }
+            if (!formatedData[item.projectId]?.name) {
+              formatedData[item.projectId] = {
+                ...formatedData[item.projectId],
+                ...(projectLists.find(
+                  (data) => data.projectId === item.projectId,
+                ) || {}),
+                ...(projectLists.find(
+                  (data) => data.projectId === item.projectId,
+                ) || {}),
+              }
             }
           }
-        }
-      })
+        })
 
-      setTableLists(
-        Object.values(formatedData).sort((a, b) => (a.name > b.name ? 1 : -1)),
-      )
-      setTotal(total)
-      setActiveProjectKey(Object.keys(formatedData)[0])
-    }
-    getReport()
-  }, [formData, projectLists, getWayLists])
+        const reportLists = Object.values(formatedData).sort((a, b) =>
+          a.name > b.name ? 1 : -1,
+        )
+
+        setReportData({
+          activeProject: projectId,
+          total,
+          activeGateWay: gatewayId,
+          reportLists,
+        })
+
+        setActiveProjectKey(
+          reportLists[0]?.projectId || reportLists[0]?.gatewayId,
+        )
+      }
+      getReport()
+    },
+    [projectLists, gateWayLists],
+  )
 
   useEffect(() => {
-    handleGetProjectLists()
-    handleGetGateWay()
+    initiateApi()
   }, [])
 
-  useEffect(() => {
-    handleGenerateReport()
-  }, [handleGenerateReport])
-
   const renderLists = (data) => {
-    const { total, projectId, gatewayId, name, transactions, gateWays } = data
-    const listData = transactions || gateWays
-    const uniqueKey = gateWays ? gatewayId : projectId
+    const { total, projectId, gatewayId, name, transactionsLists } = data
+    const uniqueKey = projectId || gatewayId
+    const showShowLabel =
+      reportData.activeProject !== 'all' && reportData.activeGateWay !== 'all'
+    const showGateWay =
+      reportData.activeGateWay === 'all' && reportData.activeProject === 'all'
 
     return (
       <>
         <div
           className="project-item"
           key={uniqueKey}
+          style={{ display: showShowLabel ? 'none' : 'flex' }}
           onClick={() => {
             setActiveProjectKey((s) => (s === uniqueKey ? null : uniqueKey))
           }}
@@ -131,192 +210,109 @@ const Reports = () => {
           <h3>{name}</h3>
           <h3>TOTAL: {total} USD</h3>
         </div>
-        {listData && activeProjectKey === uniqueKey ? (
-          <>
+        {transactionsLists && activeProjectKey === uniqueKey ? (
+          <div className="table-container">
             <table>
-              <tr>
-                <th>Date</th>
-                {!formData.gatewayId && !gateWays && <th>Gateway</th>}
-                <th>Transaction ID</th>
-                <th>Amount</th>
-              </tr>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  {showGateWay && <th>Gateway</th>}
+                  <th>Transaction ID</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
               <tbody>
-                {listData.map((item) => (
+                {transactionsLists.map((item) => (
                   <tr key={item.paymentId}>
                     <td>{item.modified}</td>
-                    {!formData.gatewayId && !gateWays && (
-                      <td>{item?.gateWayData?.name}</td>
-                    )}
+                    {showGateWay && <td>{item?.gateWayData?.name}</td>}
                     <td>{item.paymentId}</td>
                     <td>{toMoney(item.amount)} USD</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </>
+          </div>
         ) : null}
       </>
     )
   }
 
-  const renderTitleLabel = () => {
-    let projectTitle = ''
-    let gatewayTitle = ''
-
-    if (!formData.projectId) {
-      projectTitle = 'All project'
-    } else {
-      projectTitle = projectLists.find(
-        (data) => data.projectId === formData.projectId,
-      )?.name
-    }
-
-    if (!formData.gatewayId) {
-      gatewayTitle = 'All gateways'
-    } else {
-      gatewayTitle = getWayLists.find(
-        (data) => data.gatewayId === formData.gatewayId,
-      )?.name
-    }
-
-    return (
-      <h1>
-        {projectTitle} | {gatewayTitle}
-      </h1>
-    )
-  }
-
-  const renderAnalysis = (type) => {
-    return (
-      <div className="report-container-col analysis-container">
-        <div className="label-lists">
-          {tableLists.map((item, i) => (
-            <div className="label-item" key={item.projectId}>
-              <span style={{ background: COLORS[i] }} />
-              <p>{item.name}</p>
-            </div>
-          ))}
-        </div>
-        <div className="chart-container" style={{ width: '100%', height: 300 }}>
-          <ResponsiveContainer>
-            <PieChart onMouseEnter={console.log}>
-              <Pie
-                data={tableLists}
-                innerRadius={80}
-                outerRadius={140}
-                fill="#8884d8"
-                paddingAngle={5}
-                dataKey="total"
-              >
-                {data.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="total-container">
-          {type === 'gateway' ? (
-            <h3>GATEWAY TOTAL | {toMoney(total)} USD</h3>
-          ) : (
-            <h3>PROJECT TOTAL | {toMoney(total)} USD</h3>
-          )}
-        </div>
-      </div>
-    )
-  }
   return (
     <Container>
       <header>
         <div className="col-1">
           <h1>Reports</h1>
           <p>Easily generate a report of your transactions</p>
+          <p className="error-msg">{reportData.errorMessage}</p>
         </div>
         <div className="col-2">
-          <InputGroup
-            type="select"
-            name="projectId"
-            value={formData.projectId}
-            onChange={handleInput}
-            optionLists={
-              <>
-                <option value={''}>All</option>
-                {projectLists
-                  ? projectLists.map((item) => (
-                      <option value={item.projectId}>{item.name}</option>
-                    ))
-                  : null}
-              </>
-            }
+          <ReportFilter
+            {...{
+              filterData,
+              handleInput,
+              projectLists,
+              gateWayLists,
+              handleGenerateReport,
+            }}
           />
-          <InputGroup
-            type="select"
-            name="gatewayId"
-            className="gateway-item"
-            value={formData.gatewayId}
-            optionLists={
-              <>
-                <option value={''}>All</option>
-                {getWayLists
-                  ? getWayLists.map((item) => (
-                      <option value={item.gatewayId}>{item.name}</option>
-                    ))
-                  : null}
-              </>
-            }
-            onChange={handleInput}
-          />
-          <InputGroup
-            type="date"
-            value={formData.from}
-            onChange={handleInput}
-            min="2021-01-01"
-            max="2021/12/31"
-            name="from"
-          />
-          <InputGroup
-            type="date"
-            value={formData.to}
-            onChange={handleInput}
-            name="to"
-          />
-          <Button loading={loading} onClick={handleGenerateReport}>
-            Generate Report
-          </Button>
         </div>
       </header>
-      <div className="report-row">
-        <div className="report-container-col">
-          <div className="report-content">
-            <div>
-              <div className="report-col_1">{renderTitleLabel()}</div>
-              <div className="report-col_2"></div>
-            </div>
-            <div className="project-lists">
-              {tableLists ? (
-                <>
-                  {tableLists.length > 0 ? (
-                    tableLists.map((item) => renderLists(item))
-                  ) : (
-                    <h1>Empty</h1>
-                  )}
-                </>
-              ) : (
-                <h1>Loading</h1>
-              )}
-            </div>
-          </div>
-          <div className="total-container">
-            <h3>TOTAL: {toMoney(total)} USD</h3>
-          </div>
+      {loading ? (
+        <div className="loading-container">
+          <Spinner size={'55px'} />
         </div>
-
-        {!formData.projectId && formData.gatewayId && renderAnalysis('gateway')}
-        {formData.projectId && !formData.gatewayId && renderAnalysis('project')}
-      </div>
+      ) : (
+        <>
+          {!reportData.reportLists ? (
+            <EmptyReport />
+          ) : (
+            <div className="report-row">
+              <div className="report-container-col">
+                <div className="report-content">
+                  <div>
+                    <div className="report-col_1">
+                      <ReportTitle
+                        {...{ reportData, projectLists, gateWayLists }}
+                      />
+                    </div>
+                    <div className="report-col_2"></div>
+                  </div>
+                  <div className="project-lists">
+                    {reportData.reportLists && (
+                      <>
+                        {reportData.reportLists.length > 0 ? (
+                          reportData.reportLists.map((item) =>
+                            renderLists(item),
+                          )
+                        ) : (
+                          <EmptyReport />
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+                {((reportData.activeProject === 'all' &&
+                  reportData.activeGateWay === 'all') ||
+                  (reportData.activeProject !== 'all' &&
+                    reportData.activeGateWay !== 'all')) && (
+                  <div className="total-container">
+                    <h3>TOTAL: {toMoney(reportData.total)} USD</h3>
+                  </div>
+                )}
+              </div>
+              {reportData.activeProject === 'all' &&
+                reportData.activeGateWay !== 'all' && (
+                  <ReportAnalysis {...{ type: 'gateway', reportData }} />
+                )}
+              {reportData.activeProject !== 'all' &&
+                reportData.activeGateWay === 'all' && (
+                  <ReportAnalysis {...{ type: 'project', reportData }} />
+                )}{' '}
+            </div>
+          )}
+        </>
+      )}
     </Container>
   )
 }

@@ -7,6 +7,7 @@ const InputGroup = ({
   label,
   type = 'text',
   name,
+  flexLabel = '',
   height,
   id = '',
   className = '',
@@ -16,7 +17,6 @@ const InputGroup = ({
   optionLists,
   value = '',
   width,
-  defaultValue = '',
   placeholder = '',
 }) => {
   const handleTextInput = (e) => {
@@ -38,6 +38,7 @@ const InputGroup = ({
         <>
           {label && <label>{label}</label>}
           <div className="input-container">
+            {flexLabel && <span className="flex-label">{flexLabel}</span>}
             {type === 'select' ? (
               <>
                 <select
@@ -56,7 +57,6 @@ const InputGroup = ({
                 name={name}
                 value={value}
                 disabled={disabled}
-                defaultValue={defaultValue}
                 type={type}
                 placeholder={placeholder}
                 required={required}

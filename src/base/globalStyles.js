@@ -43,19 +43,6 @@ export default createGlobalStyle`
       strong {
         font-weight:500;
       }
-      div.app--content {
-        width: 90%;
-        padding-top: ${({ theme }) => theme.dimensions.desktopTopPadding};
-        ${maxQuery('lg')} {
-          padding-top: ${({ theme }) => theme.dimensions.mobileTopPadding};
-        }
-        max-width: ${({ theme }) => theme.dimensions.maxWidth};
-        margin: 0 auto;
-      }
-      div.app--container__landingStack {
-        max-width: 1300px;
-        margin: 0 auto;
-      }
     }
 
   img {

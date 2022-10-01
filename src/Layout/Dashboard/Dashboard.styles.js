@@ -1,4 +1,4 @@
-import Styled from 'styled-components'
+import Styled, { css } from 'styled-components'
 
 export default Styled.div`
     padding-top: ${({ theme }) => theme.dimensions.navHeight};
@@ -71,11 +71,26 @@ export default Styled.div`
 
     div.dashboard-row {
         padding-left:  ${({ theme }) => theme.dimensions.sideNavWidth};
-        
+            transition: all 0.5s;
+        ${({ showMenu }) =>
+          showMenu &&
+          css`
+            padding-left: 0px;
+          `}
+
         aside.dashboard-aside {
             position: fixed;
             top: 0px;
             left: 0px;
+            transition: all 0.5s;
+       
+            ${({ showMenu }) =>
+              showMenu &&
+              css`
+                transform: ${({ theme }) =>
+                  `translateX(-${theme.dimensions.sideNavWidth})`};
+              `}
+
             height: 100vh;
             padding-top: ${({ theme }) => theme.dimensions.navHeight};
             width: ${({ theme }) => theme.dimensions.sideNavWidth};
@@ -116,10 +131,18 @@ export default Styled.div`
         left: 0px;
         background: #fff;
         padding-left:  ${({ theme }) => theme.dimensions.sideNavWidth};
+            transition: all 0.5s;
+        ${({ showMenu }) =>
+          showMenu &&
+          css`
+            padding-left: 0px;
+          `}
+
 
         ol {
             display: flex;
             margin: 0px;
+            padding-left: 1em;
             height: ${({ theme }) => theme.dimensions.navHeight};
             align-items: center;
             list-style: none;
