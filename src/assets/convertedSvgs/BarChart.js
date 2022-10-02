@@ -1,14 +1,7 @@
-import * as React from "react";
+import * as React from 'react';
 
 const SvgBarChart = (props) => (
-  <svg
-    width="1em"
-    height="1em"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
+  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       d="M21.32 0H2.68A2.68 2.68 0 0 0 0 2.68v18.64C0 22.8 1.2 24 2.68 24h18.64C22.8 24 24 22.8 24 21.32V2.68C24 1.2 22.8 0 21.32 0Z"
       fill="#CDCCCC"

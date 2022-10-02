@@ -1,4 +1,4 @@
-import Styled, { css } from 'styled-components'
+import Styled, { css } from 'styled-components';
 
 export default Styled.div`
     padding-top: ${({ theme }) => theme.dimensions.navHeight};
@@ -87,8 +87,7 @@ export default Styled.div`
             ${({ showMenu }) =>
               !showMenu &&
               css`
-                transform: ${({ theme }) =>
-                  `translateX(-${theme.dimensions.sideNavWidth})`};
+                transform: ${({ theme }) => `translateX(-${theme.dimensions.sideNavWidth})`};
               `}
 
             height: 100vh;
@@ -164,4 +163,4 @@ export default Styled.div`
         }
     }
 
-`
+`;

@@ -2,6 +2,16 @@
   "name": "mvpfactory_test",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "convert-svg": "npx @svgr/cli --icon --ignore-existing src/assets/svgs --out-dir src/assets/convertedSvgs",
+    "eject": "react-scripts eject",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -9,6 +19,7 @@
     "axios": "^0.27.2",
     "moment": "^2.29.4",
     "polished": "^4.2.2",
+    "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
@@ -20,12 +31,18 @@
     "styled-components": "^5.3.6",
     "web-vitals": "^2.1.4"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "convert-svg": "npx @svgr/cli --icon --ignore-existing src/assets/svgs --out-dir src/assets/convertedSvgs",
-    "eject": "react-scripts eject"
+  "devDependencies": {
+    "@svgr/cli": "^6.3.1",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.31.8",
+    "prettier": "^2.7.1",
+    "react-test-renderer": "^18.2.0"
   },
   "eslintConfig": {
     "extends": [
@@ -44,8 +61,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@svgr/cli": "^6.3.1"
   }
 }

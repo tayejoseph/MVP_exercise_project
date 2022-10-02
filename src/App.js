@@ -1,21 +1,21 @@
-import React, { useEffect } from 'react'
-import { Route, useLocation, Switch, Redirect } from 'react-router-dom'
-import { ThemeProvider } from 'styled-components'
-import { SkeletonTheme } from 'react-loading-skeleton'
-import { IconContext } from 'react-icons'
-import theme from 'base/theme'
-import { Reports } from 'Views'
-import GlobalStyle from 'base/globalStyles'
-import { Dashboard } from 'Layout'
+import React, { useEffect } from 'react';
+import { Route, useLocation, Switch, Redirect } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
+import { SkeletonTheme } from 'react-loading-skeleton';
+import { IconContext } from 'react-icons';
+import { theme, GlobalStyle } from 'styles';
+import { Reports } from 'pages';
+import { Dashboard } from 'layout';
 
 const ScrollToTop = () => {
-  const { pathname } = useLocation()
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-  }, [pathname])
+  const { pathname } = useLocation();
 
-  return null
-}
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }, [pathname]);
+
+  return null;
+};
 
 const App = () => {
   return (
@@ -25,9 +25,8 @@ const App = () => {
         <IconContext.Provider
           value={{
             className: 'icon',
-            style: { verticalAlign: 'middle' },
-          }}
-        >
+            style: { verticalAlign: 'middle' }
+          }}>
           <Dashboard>
             <Switch>
               <Route path={'/report'} component={Reports} />
@@ -40,7 +39,7 @@ const App = () => {
       </SkeletonTheme>
       <ScrollToTop />
     </ThemeProvider>
-  )
-}
+  );
+};
 
-export default App
+export default App;

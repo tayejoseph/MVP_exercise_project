@@ -1,1 +1,1 @@
-export { default as EmptyState } from './EmptyState.svg'
+export { default as EmptyState } from './EmptyState.svg';

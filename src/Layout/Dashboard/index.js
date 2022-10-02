@@ -1,58 +1,51 @@
-import React, { useEffect, useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
-import { axios } from 'lib'
-import {
-  AppLogo,
-  BarChart,
-  Menu,
-  Computer,
-  PieChart,
-  Power,
-  AppMenu,
-} from 'assets/convertedSvgs'
-import Container from './Dashboard.styles'
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Link, NavLink } from 'react-router-dom';
+import { axios } from 'lib';
+import { AppLogo, BarChart, Menu, Computer, PieChart, Power, AppMenu } from 'assets/convertedSvgs';
+import Container from './Dashboard.styles';
 
 const navLinks = [
   {
     icon: <BarChart />,
-    route: '/',
+    route: '/'
   },
   {
     icon: <Menu />,
-    route: '/',
+    route: '/'
   },
   {
     icon: <Computer />,
-    route: '/',
+    route: '/'
   },
   {
     icon: <PieChart />,
-    route: '/',
+    route: '/'
   },
   {
     icon: <Power />,
-    route: '/',
-  },
-]
+    route: '/'
+  }
+];
 
 const bottomNavLinks = [
   { title: 'Terms & Condition', route: '/terms&Condition' },
-  { title: 'Privacy Policy', route: '/privacy-policy' },
-]
+  { title: 'Privacy Policy', route: '/privacy-policy' }
+];
 
 const Dashboard = ({ children }) => {
-  const [userData, setUserData] = useState(null)
-  const [showMenu, setDisplay] = useState(true)
+  const [userData, setUserData] = useState(null);
+  const [showMenu, setDisplay] = useState(true);
 
   useEffect(() => {
     const handleGetUser = async () => {
-      const { data: response } = await axios.get('/users')
+      const { data: response } = await axios.get('/users');
       if (response?.data) {
-        setUserData(response.data[0])
+        setUserData(response.data[0]);
       }
-    }
-    handleGetUser()
-  }, [])
+    };
+    handleGetUser();
+  }, []);
 
   return (
     <Container showMenu={showMenu}>
@@ -64,8 +57,7 @@ const Dashboard = ({ children }) => {
           <button
             aria-label={showMenu ? 'hide menu' : 'show menu'}
             className="menu-btn"
-            onClick={() => setDisplay((s) => !s)}
-          >
+            onClick={() => setDisplay((s) => !s)}>
             <AppMenu />
           </button>
         </div>
@@ -114,7 +106,10 @@ const Dashboard = ({ children }) => {
         </footer>
       </div>
     </Container>
-  )
-}
+  );
+};
 
-export default Dashboard
+Dashboard.propTypes = {
+  children: PropTypes.element
+};
+export default Dashboard;
