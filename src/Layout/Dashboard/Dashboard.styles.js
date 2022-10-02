@@ -107,6 +107,13 @@ export default Styled.div`
                         display: flex;
                         align-items: center;
                         justify-content: center;
+
+                        &.disabled-link {
+                           > * {
+                            cursor: no-drop;
+                            /* pointer-events: none; */
+                           }
+                        }
     
                         svg {
                             font-size: 1.5rem;

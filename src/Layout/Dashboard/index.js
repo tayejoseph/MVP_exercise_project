@@ -8,23 +8,27 @@ import Container from './Dashboard.styles';
 const navLinks = [
   {
     icon: <BarChart />,
-    route: '/'
+    route: '/',
+    disabled: true
   },
   {
     icon: <Menu />,
-    route: '/'
+    route: '/',
+    disabled: true
   },
   {
     icon: <Computer />,
-    route: '/'
+    route: '/',
+    disabled: true
   },
   {
     icon: <PieChart />,
-    route: '/'
+    route: '/report'
   },
   {
     icon: <Power />,
-    route: '/'
+    route: '/',
+    disabled: true
   }
 ];
 
@@ -83,8 +87,10 @@ const Dashboard = ({ children }) => {
             <ol>
               {navLinks &&
                 navLinks.map((item, i) => (
-                  <li key={`navLink-${i}`}>
-                    <NavLink to={item.route}>{item.icon}</NavLink>
+                  <li key={`navLink-${i}`} className={item.disabled ? 'disabled-link' : ''}>
+                    <NavLink to={item.route} onClick={(e) => item.disabled && e.preventDefault()}>
+                      {item.icon}
+                    </NavLink>
                   </li>
                 ))}
             </ol>
