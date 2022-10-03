@@ -7,7 +7,7 @@ import { axios } from 'lib';
 import { theme, GlobalStyle } from 'styles';
 import { Reports, Users } from 'views';
 import { handleError } from 'helpers';
-import { Dashboard } from 'layouts';
+import { Dashboard } from 'layout';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
