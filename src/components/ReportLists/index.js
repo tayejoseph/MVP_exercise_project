@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { toMoney } from 'helpers';
-import Container from './ReportLists.style';
+import Container from './reportLists.style';
 
 const ReportLists = (props) => {
   const { reportLists, activeProject, activeGateWay, handleSetActiveProject, activeProjectKey } = props;
@@ -22,7 +22,7 @@ const ReportLists = (props) => {
             handleSetActiveProject(uniqueKey);
           }}>
           <h3>{name}</h3>
-          <h3>TOTAL: {total} USD</h3>
+          <h3>TOTAL: {toMoney(total.toFixed(2))} USD</h3>
         </div>
 
         {transactionsLists && activeProjectKey === uniqueKey ? (

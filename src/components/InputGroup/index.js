@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Container from './InputGroup.styles';
+import Container from './inputGroup.styles';
 
 const InputGroup = ({
   children,
@@ -45,7 +45,8 @@ const InputGroup = ({
                   autoComplete={autoComplete}
                   required={required}
                   onChange={handleTextInput}
-                  {...rest}>
+                  {...rest}
+                >
                   {optionLists}
                 </select>
               </>

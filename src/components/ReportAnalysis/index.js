@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { toMoney } from 'helpers';
-import Container from './ReportAnalysis.styles';
+import Container from './reportAnalysis.styles';
 
 const COLORS = ['#A259FF', '#F24E1E', '#FFC107', '#6497B1'];
 const RADIAN = Math.PI / 180;
@@ -44,7 +44,8 @@ const ReportAnalysis = (props) => {
               cy="50%"
               fill="#8884d8"
               label={renderCustomizedLabel}
-              dataKey="total">
+              dataKey="total"
+            >
               {reportLists.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}

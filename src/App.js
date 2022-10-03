@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, useLocation, Switch, Redirect } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { SkeletonTheme } from 'react-loading-skeleton';
 import { IconContext } from 'react-icons';
+import { axios } from 'lib';
 import { theme, GlobalStyle } from 'styles';
-import { Reports } from 'pages';
+import { Reports, Users } from 'pages';
+import { handleError } from 'helpers';
 import { Dashboard } from 'layout';
 
 const ScrollToTop = () => {
@@ -18,6 +20,21 @@ const ScrollToTop = () => {
 };
 
 const App = () => {
+  const [userData, setUserData] = useState(null);
+
+  const handleGetUsers = () => {
+    axios
+      .get('/users')
+      .then((res) => {
+        setUserData(res.data.data);
+      })
+      .catch(handleError);
+  };
+
+  useEffect(() => {
+    handleGetUsers();
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
@@ -26,10 +43,14 @@ const App = () => {
           value={{
             className: 'icon',
             style: { verticalAlign: 'middle' }
-          }}>
-          <Dashboard>
+          }}
+        >
+          <Dashboard {...{ userData }}>
             <Switch>
               <Route path={'/report'} component={Reports} />
+              <Route path={'/users'}>
+                <Users {...{ userData }} />
+              </Route>
               <Route path={'*'}>
                 <Redirect to="/report" />
               </Route>

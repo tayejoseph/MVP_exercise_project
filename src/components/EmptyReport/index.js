@@ -1,6 +1,6 @@
 import React from 'react';
 import { EmptyState } from 'assets/svgImg';
-import Container from './EmptyReport.style';
+import Container from './emptyReport.style';
 
 const Reports = () => {
   return (
