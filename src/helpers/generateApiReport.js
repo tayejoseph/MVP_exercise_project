@@ -7,6 +7,7 @@ const generateApiReport = ({ data, filterData, gateWayLists, projectLists }) => 
 
   data.forEach((item) => {
     total += item.amount;
+
     if (projectId === 'all') {
       formatedData[item.projectId] = {
         ...(formatedData[item.projectId] || {}),
@@ -49,14 +50,11 @@ const generateApiReport = ({ data, filterData, gateWayLists, projectLists }) => 
       if (!formatedData[item.projectId]?.name) {
         formatedData[item.projectId] = {
           ...formatedData[item.projectId],
-          ...(projectLists.find((data) => data.projectId === item.projectId) || {}),
           ...(projectLists.find((data) => data.projectId === item.projectId) || {})
         };
       }
     }
   });
-
-  console.log({ formatedData, data }, 'formatedData');
 
   const reportLists = Object.values(formatedData).sort((a, b) => (a.name > b.name ? 1 : -1));
 

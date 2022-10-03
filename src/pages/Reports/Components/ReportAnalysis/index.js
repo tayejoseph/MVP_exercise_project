@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { toMoney } from 'helpers';
+import Container from './ReportAnalysis.styles';
 
 const COLORS = ['#A259FF', '#F24E1E', '#FFC107', '#6497B1'];
 const RADIAN = Math.PI / 180;
@@ -22,7 +23,7 @@ const ReportAnalysis = (props) => {
   };
 
   return (
-    <div className="report-container-col analysis-container">
+    <Container className="report-container-col">
       <div className="label-lists">
         {reportLists.map((item, i) => (
           <div className="label-item" key={item.projectId || item.gatewayId}>
@@ -52,13 +53,11 @@ const ReportAnalysis = (props) => {
         </ResponsiveContainer>
       </div>
       <div className="total-container">
-        {type === 'gateway' ? (
-          <h3>GATEWAY TOTAL | {toMoney(total)} USD</h3>
-        ) : (
-          <h3>PROJECT TOTAL | {toMoney(total)} USD</h3>
-        )}
+        <h3>
+          {type === 'gateway' ? 'GATEWAY' : 'PROJECT'} TOTAL | {toMoney(total)} USD
+        </h3>
       </div>
-    </div>
+    </Container>
   );
 };
 

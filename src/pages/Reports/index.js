@@ -1,15 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { axios } from 'lib';
-import Container from './Report.styles';
-import { toMoney } from 'helpers';
 import moment from 'moment';
+import { axios } from 'lib';
 import { Spinner } from 'components';
-import ReportAnalysis from './Components/ReportAnalysis';
-import ReportFilter from './Components/ReportFilter';
-import EmptyReport from './Components/EmptyReport';
-import ReportLists from './Components/ReportLists';
-
-import { generateApiReport, gatewayTitle, projectTitle, validateReportQuery } from './helper';
+import { generateApiReport, handleError, gatewayTitle, projectTitle, validateReportQuery, toMoney } from 'helpers';
+import Container from './Report.styles';
+import ReportAnalysis from './components/ReportAnalysis';
+import ReportFilter from './components/ReportFilter';
+import EmptyReport from './components/EmptyReport';
+import ReportLists from './components/ReportLists';
 
 const initfilterData = {
   gatewayId: '',
@@ -20,9 +18,8 @@ const initfilterData = {
 
 const Reports = () => {
   const [{ gateWayLists, projectLists }, setApiData] = useState({
-    gateWayLists: null,
-    projectLists: null,
-    userLists: null
+    gateWayLists: [],
+    projectLists: []
   });
 
   const [loading, setLoading] = useState(false);
@@ -34,7 +31,7 @@ const Reports = () => {
     activeProject: '',
     activeGateWay: '',
     total: 0,
-    reportLists: null
+    reportLists: []
   });
 
   const showTotal =
@@ -102,21 +99,27 @@ const Reports = () => {
     [projectLists, gateWayLists]
   );
 
+  const fetchProjects = () => {
+    axios
+      .get('/projects')
+      .then((res) => {
+        setApiData((s) => ({ ...s, projectLists: res.data.data }));
+      })
+      .catch(handleError);
+  };
+
+  const fetchGateways = () => {
+    axios
+      .get('/gateways')
+      .then((res) => {
+        setApiData((s) => ({ ...s, gateWayLists: res.data.data }));
+      })
+      .catch(handleError);
+  };
+
   useEffect(() => {
-    const initiateApi = async () => {
-      const getProjectLists = () => axios.get('/projects');
-      const getGateWay = () => axios.get('/gateways');
-
-      Promise.all([getProjectLists(), getGateWay()]).then((results) => {
-        const [projectData, gateWayData] = results;
-        setApiData({
-          gateWayLists: gateWayData?.data?.data || [],
-          projectLists: projectData?.data?.data || []
-        });
-      });
-    };
-
-    initiateApi();
+    fetchGateways();
+    fetchProjects();
   }, []);
 
   return (
@@ -145,7 +148,7 @@ const Reports = () => {
         </div>
       ) : (
         <>
-          {!reportData.reportLists ? (
+          {reportData.reportLists.length === 0 ? (
             <EmptyReport />
           ) : (
             <div className="report-row">
@@ -167,6 +170,7 @@ const Reports = () => {
                     }}
                   />
                 </div>
+
                 {showTotal && (
                   <div className="total-container">
                     <h3>TOTAL: {toMoney(reportData.total)} USD</h3>
@@ -190,7 +194,7 @@ const Reports = () => {
                     total: reportData.total
                   }}
                 />
-              )}{' '}
+              )}
             </div>
           )}
         </>

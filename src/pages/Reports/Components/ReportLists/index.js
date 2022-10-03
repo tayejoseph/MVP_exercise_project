@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { toMoney } from 'helpers';
-import EmptyReport from '../EmptyReport';
 import Container from './ReportLists.style';
 
 const ReportLists = (props) => {
@@ -59,13 +58,9 @@ const ReportLists = (props) => {
   return (
     <Container>
       <>
-        {reportLists.length > 0 ? (
-          reportLists.map((item) => (
-            <React.Fragment key={item.projectId || item.gatewayId}>{renderLists(item)}</React.Fragment>
-          ))
-        ) : (
-          <EmptyReport />
-        )}
+        {reportLists.map((item) => (
+          <React.Fragment key={item.projectId || item.gatewayId}>{renderLists(item)}</React.Fragment>
+        ))}
       </>
     </Container>
   );

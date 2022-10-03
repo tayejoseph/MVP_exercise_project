@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link, NavLink } from 'react-router-dom';
 import { axios } from 'lib';
+import { handleError } from 'helpers';
 import { AppLogo, BarChart, Menu, Computer, PieChart, Power, AppMenu } from 'assets/convertedSvgs';
 import Container from './Dashboard.styles';
 
@@ -42,13 +43,12 @@ const Dashboard = ({ children }) => {
   const [showMenu, setDisplay] = useState(true);
 
   useEffect(() => {
-    const handleGetUser = async () => {
-      const { data: response } = await axios.get('/users');
-      if (response?.data) {
-        setUserData(response.data[0]);
-      }
-    };
-    handleGetUser();
+    axios
+      .get('/users')
+      .then((res) => {
+        setUserData(res.data.data[0]);
+      })
+      .catch(handleError);
   }, []);
 
   return (
@@ -118,4 +118,5 @@ const Dashboard = ({ children }) => {
 Dashboard.propTypes = {
   children: PropTypes.element
 };
+
 export default Dashboard;

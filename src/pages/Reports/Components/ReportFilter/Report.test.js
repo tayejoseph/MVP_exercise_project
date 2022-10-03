@@ -13,10 +13,10 @@ it('renders correctly', () => {
       <ReportFilter
         {...{
           filterData,
-          handleInput: () => console.log,
+          handleInput: () => ({}),
           projectLists: [],
           gateWayLists: [],
-          handleGenerateReport: () => console.log
+          handleGenerateReport: () => ({})
         }}
       />
     )
