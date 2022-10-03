@@ -18,7 +18,8 @@ const InputGroup = ({
   optionLists,
   value = '',
   width,
-  placeholder = ''
+  placeholder = '',
+  ...rest
 }) => {
   const handleTextInput = (e) => {
     if (typeof onChange === 'function') {
@@ -43,7 +44,8 @@ const InputGroup = ({
                   disabled={disabled}
                   autoComplete={autoComplete}
                   required={required}
-                  onChange={handleTextInput}>
+                  onChange={handleTextInput}
+                  {...rest}>
                   {optionLists}
                 </select>
               </>
@@ -57,6 +59,7 @@ const InputGroup = ({
                 required={required}
                 autoComplete={autoComplete}
                 onChange={handleTextInput}
+                {...rest}
               />
             )}
           </div>

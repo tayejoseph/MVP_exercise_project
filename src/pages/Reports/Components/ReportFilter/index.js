@@ -55,7 +55,6 @@ const ReportFilter = (props) => {
         flexLabel="From"
         value={filterData.from}
         onChange={handleInput}
-        // min="1900-01-01" max="2016-06-06"
         min="2021-01-01"
         max="2021-12-31"
         name="from"
