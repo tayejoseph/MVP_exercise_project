@@ -61,7 +61,7 @@ const generateApiReport = ({ data, filterData, gateWayLists, projectLists }) => 
   return {
     reportData: {
       activeProject: projectId,
-      total,
+      total: total.toFixed(2),
       activeGateWay: gatewayId,
       reportLists
     },

@@ -22,7 +22,7 @@ const ReportLists = (props) => {
             handleSetActiveProject(uniqueKey);
           }}>
           <h3>{name}</h3>
-          <h3>TOTAL: {total} USD</h3>
+          <h3>TOTAL: {toMoney(total.toFixed(2))} USD</h3>
         </div>
 
         {transactionsLists && activeProjectKey === uniqueKey ? (
