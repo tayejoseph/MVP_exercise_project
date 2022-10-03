@@ -67,8 +67,7 @@ const Dashboard = ({ userData, children }) => {
           <button
             aria-label={showMenu ? 'hide menu' : 'show menu'}
             className="menu-btn"
-            onClick={() => setDisplay((s) => !s)}
-          >
+            onClick={() => setDisplay((s) => !s)}>
             <AppMenu />
           </button>
         </div>
