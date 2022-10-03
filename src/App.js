@@ -5,7 +5,7 @@ import { SkeletonTheme } from 'react-loading-skeleton';
 import { IconContext } from 'react-icons';
 import { axios } from 'lib';
 import { theme, GlobalStyle } from 'styles';
-import { Reports, Users } from 'pages';
+import { Reports, Users } from 'views';
 import { handleError } from 'helpers';
 import { Dashboard } from 'layout';
 
