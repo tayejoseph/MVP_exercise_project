@@ -45,8 +45,7 @@ const InputGroup = ({
                   autoComplete={autoComplete}
                   required={required}
                   onChange={handleTextInput}
-                  {...rest}
-                >
+                  {...rest}>
                   {optionLists}
                 </select>
               </>

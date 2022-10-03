@@ -43,8 +43,7 @@ const App = () => {
           value={{
             className: 'icon',
             style: { verticalAlign: 'middle' }
-          }}
-        >
+          }}>
           <Dashboard {...{ userData }}>
             <Switch>
               <Route path={'/report'} component={Reports} />
