@@ -18,8 +18,7 @@ const SvgAppLogo = (props) => (
         y1={20.596}
         x2={10.953}
         y2={43.426}
-        gradientUnits="userSpaceOnUse"
-      >
+        gradientUnits="userSpaceOnUse">
         <stop stopColor="#00628B" />
         <stop offset={0.03} stopColor="#006792" />
         <stop offset={0.19} stopColor="#007BAF" />

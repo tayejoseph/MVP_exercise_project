@@ -20,7 +20,8 @@ const ReportLists = (props) => {
           style={{ display: showShowLabel ? 'none' : 'flex' }}
           onClick={() => {
             handleSetActiveProject(uniqueKey);
-          }}>
+          }}
+        >
           <h3>{name}</h3>
           <h3>TOTAL: {toMoney(total.toFixed(2))} USD</h3>
         </div>

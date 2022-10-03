@@ -44,8 +44,7 @@ const ReportAnalysis = (props) => {
               cy="50%"
               fill="#8884d8"
               label={renderCustomizedLabel}
-              dataKey="total"
-            >
+              dataKey="total">
               {reportLists.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
