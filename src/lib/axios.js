@@ -1,8 +1,9 @@
-import axios from 'axios'
+import axios from 'axios';
+import appConfigs from 'config';
 
 const server = axios.create({
-  baseURL: ' http://178.63.13.157:8090/mock-api/api',
-  headers: { 'Content-Type': 'application/json' },
-})
+  baseURL: appConfigs.baseUrl,
+  headers: { 'Content-Type': 'application/json' }
+});
 
-export default server
+export default server;

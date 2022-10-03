@@ -1,58 +1,55 @@
-import React, { useEffect, useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
-import { axios } from 'lib'
-import {
-  AppLogo,
-  BarChart,
-  Menu,
-  Computer,
-  PieChart,
-  Power,
-  AppMenu,
-} from 'assets/convertedSvgs'
-import Container from './Dashboard.styles'
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Link, NavLink } from 'react-router-dom';
+import { axios } from 'lib';
+import { handleError } from 'helpers';
+import { AppLogo, BarChart, Menu, Computer, PieChart, Power, AppMenu } from 'assets/convertedSvgs';
+import Container from './Dashboard.styles';
 
 const navLinks = [
   {
     icon: <BarChart />,
     route: '/',
+    disabled: true
   },
   {
     icon: <Menu />,
     route: '/',
+    disabled: true
   },
   {
     icon: <Computer />,
     route: '/',
+    disabled: true
   },
   {
     icon: <PieChart />,
-    route: '/',
+    route: '/report'
   },
   {
     icon: <Power />,
     route: '/',
-  },
-]
+    disabled: true
+  }
+];
 
 const bottomNavLinks = [
   { title: 'Terms & Condition', route: '/terms&Condition' },
-  { title: 'Privacy Policy', route: '/privacy-policy' },
-]
+  { title: 'Privacy Policy', route: '/privacy-policy' }
+];
 
 const Dashboard = ({ children }) => {
-  const [userData, setUserData] = useState(null)
-  const [showMenu, setDisplay] = useState(true)
+  const [userData, setUserData] = useState(null);
+  const [showMenu, setDisplay] = useState(true);
 
   useEffect(() => {
-    const handleGetUser = async () => {
-      const { data: response } = await axios.get('/users')
-      if (response?.data) {
-        setUserData(response.data[0])
-      }
-    }
-    handleGetUser()
-  }, [])
+    axios
+      .get('/users')
+      .then((res) => {
+        setUserData(res.data.data[0]);
+      })
+      .catch(handleError);
+  }, []);
 
   return (
     <Container showMenu={showMenu}>
@@ -64,8 +61,7 @@ const Dashboard = ({ children }) => {
           <button
             aria-label={showMenu ? 'hide menu' : 'show menu'}
             className="menu-btn"
-            onClick={() => setDisplay((s) => !s)}
-          >
+            onClick={() => setDisplay((s) => !s)}>
             <AppMenu />
           </button>
         </div>
@@ -91,8 +87,10 @@ const Dashboard = ({ children }) => {
             <ol>
               {navLinks &&
                 navLinks.map((item, i) => (
-                  <li key={`navLink-${i}`}>
-                    <NavLink to={item.route}>{item.icon}</NavLink>
+                  <li key={`navLink-${i}`} className={item.disabled ? 'disabled-link' : ''}>
+                    <NavLink to={item.route} onClick={(e) => item.disabled && e.preventDefault()}>
+                      {item.icon}
+                    </NavLink>
                   </li>
                 ))}
             </ol>
@@ -114,7 +112,11 @@ const Dashboard = ({ children }) => {
         </footer>
       </div>
     </Container>
-  )
-}
+  );
+};
 
-export default Dashboard
+Dashboard.propTypes = {
+  children: PropTypes.element
+};
+
+export default Dashboard;

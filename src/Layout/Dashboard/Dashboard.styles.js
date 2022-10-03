@@ -1,4 +1,4 @@
-import Styled, { css } from 'styled-components'
+import Styled, { css } from 'styled-components';
 
 export default Styled.div`
     padding-top: ${({ theme }) => theme.dimensions.navHeight};
@@ -73,7 +73,7 @@ export default Styled.div`
         padding-left:  ${({ theme }) => theme.dimensions.sideNavWidth};
             transition: all 0.5s;
         ${({ showMenu }) =>
-          showMenu &&
+          !showMenu &&
           css`
             padding-left: 0px;
           `}
@@ -85,10 +85,9 @@ export default Styled.div`
             transition: all 0.5s;
        
             ${({ showMenu }) =>
-              showMenu &&
+              !showMenu &&
               css`
-                transform: ${({ theme }) =>
-                  `translateX(-${theme.dimensions.sideNavWidth})`};
+                transform: ${({ theme }) => `translateX(-${theme.dimensions.sideNavWidth})`};
               `}
 
             height: 100vh;
@@ -108,6 +107,13 @@ export default Styled.div`
                         display: flex;
                         align-items: center;
                         justify-content: center;
+
+                        &.disabled-link {
+                           > * {
+                            cursor: no-drop;
+                            /* pointer-events: none; */
+                           }
+                        }
     
                         svg {
                             font-size: 1.5rem;
@@ -133,7 +139,7 @@ export default Styled.div`
         padding-left:  ${({ theme }) => theme.dimensions.sideNavWidth};
             transition: all 0.5s;
         ${({ showMenu }) =>
-          showMenu &&
+          !showMenu &&
           css`
             padding-left: 0px;
           `}
@@ -164,4 +170,4 @@ export default Styled.div`
         }
     }
 
-`
+`;

@@ -1,14 +1,7 @@
-import * as React from "react";
+import * as React from 'react';
 
 const SvgPower = (props) => (
-  <svg
-    width="1em"
-    height="1em"
-    viewBox="0 0 23 25"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
+  <svg width="1em" height="1em" viewBox="0 0 23 25" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       d="M11.545 13.78a1.138 1.138 0 0 0 1.15-1.14V1.15a1.15 1.15 0 0 0-.34-.81 1.14 1.14 0 0 0-1.25-.253 1.11 1.11 0 0 0-.37.253 1.109 1.109 0 0 0-.34.81v11.49a1.14 1.14 0 0 0 1.15 1.14Z"
       fill="#B3B3B3"
