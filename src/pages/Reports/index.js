@@ -3,11 +3,8 @@ import moment from 'moment';
 import { axios } from 'lib';
 import { Spinner } from 'components';
 import { generateApiReport, handleError, gatewayTitle, projectTitle, validateReportQuery, toMoney } from 'helpers';
-import Container from './Report.styles';
-import ReportAnalysis from './components/ReportAnalysis';
-import ReportFilter from './components/ReportFilter';
-import EmptyReport from './components/EmptyReport';
-import ReportLists from './components/ReportLists';
+import Container from './report.styles';
+import { ReportAnalysis, ReportFilter, EmptyReport, ReportLists } from 'components';
 
 const initfilterData = {
   gatewayId: '',

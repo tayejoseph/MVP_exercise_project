@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { toMoney } from 'helpers';
-import Container from './ReportLists.style';
+import Container from './reportLists.style';
 
 const ReportLists = (props) => {
   const { reportLists, activeProject, activeGateWay, handleSetActiveProject, activeProjectKey } = props;

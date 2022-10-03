@@ -50,4 +50,28 @@ export default createGlobalStyle`
       width: 100%;
     }
   }
+
+  div.table-container {
+      width: 100%;
+      overflow-x: auto;
+      table {
+          border: none;
+          width: 100%;
+          border-collapse: collapse;
+          ${maxQuery('xl')} {
+              min-width: 55rem;
+          }
+          th, td {
+              text-align: center;
+              color: #011F4B;
+              font-size: 1rem;
+          }
+          tr {
+              height: 3rem;
+          }
+          tr:nth-child(even) {
+              background: #fff;
+          }
+      }
+  }
 `;

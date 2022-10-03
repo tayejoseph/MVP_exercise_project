@@ -1,33 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useLocation } from 'react-router-dom';
 import { Link, NavLink } from 'react-router-dom';
-import { axios } from 'lib';
-import { handleError } from 'helpers';
 import { AppLogo, BarChart, Menu, Computer, PieChart, Power, AppMenu } from 'assets/convertedSvgs';
-import Container from './Dashboard.styles';
+import Container from './dashboard.styles';
 
 const navLinks = [
   {
-    icon: <BarChart />,
+    icon: BarChart,
     route: '/',
     disabled: true
   },
   {
-    icon: <Menu />,
+    icon: Menu,
     route: '/',
     disabled: true
   },
   {
-    icon: <Computer />,
-    route: '/',
-    disabled: true
+    icon: Computer,
+    route: '/users'
   },
   {
-    icon: <PieChart />,
+    icon: PieChart,
     route: '/report'
   },
   {
-    icon: <Power />,
+    icon: Power,
     route: '/',
     disabled: true
   }
@@ -38,18 +36,26 @@ const bottomNavLinks = [
   { title: 'Privacy Policy', route: '/privacy-policy' }
 ];
 
-const Dashboard = ({ children }) => {
-  const [userData, setUserData] = useState(null);
+const Dashboard = ({ userData, children }) => {
+  const { pathname } = useLocation();
   const [showMenu, setDisplay] = useState(true);
 
-  useEffect(() => {
-    axios
-      .get('/users')
-      .then((res) => {
-        setUserData(res.data.data[0]);
-      })
-      .catch(handleError);
-  }, []);
+  const renderProfileDetails = () => {
+    const { firstName, lastName } = userData[0];
+    return (
+      <>
+        <div className="profile-name">
+          <p>
+            {firstName[0]}
+            {lastName[0]}
+          </p>
+        </div>
+        <p>
+          {firstName} {lastName}
+        </p>
+      </>
+    );
+  };
 
   return (
     <Container showMenu={showMenu}>
@@ -65,21 +71,7 @@ const Dashboard = ({ children }) => {
             <AppMenu />
           </button>
         </div>
-        <div className="col-2">
-          {userData && (
-            <>
-              <div className="profile-name">
-                <p>
-                  {userData.firstName[0]}
-                  {userData.lastName[0]}
-                </p>
-              </div>
-              <p>
-                {userData.firstName} {userData.lastName}
-              </p>
-            </>
-          )}
-        </div>
+        <div className="col-2">{userData && renderProfileDetails()}</div>
       </div>
       <div className="dashboard-row">
         <aside className="dashboard-aside">
@@ -89,7 +81,7 @@ const Dashboard = ({ children }) => {
                 navLinks.map((item, i) => (
                   <li key={`navLink-${i}`} className={item.disabled ? 'disabled-link' : ''}>
                     <NavLink to={item.route} onClick={(e) => item.disabled && e.preventDefault()}>
-                      {item.icon}
+                      {<item.icon isActive={pathname === item.route} />}
                     </NavLink>
                   </li>
                 ))}
@@ -116,6 +108,7 @@ const Dashboard = ({ children }) => {
 };
 
 Dashboard.propTypes = {
+  userData: PropTypes.oneOfType([PropTypes.object]),
   children: PropTypes.element
 };
 
