@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import { toMoney } from 'helpers';
 import Container from './reportLists.style';
@@ -24,7 +25,7 @@ const ReportLists = (props) => {
           <h3>{name}</h3>
           <h3>TOTAL: {toMoney(total.toFixed(2))} USD</h3>
         </div>
-
+        {/* 22.06.2022 */}
         {transactionsLists && activeProjectKey === uniqueKey ? (
           <div className="table-container">
             <table>
@@ -37,14 +38,16 @@ const ReportLists = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {transactionsLists.map((item) => (
-                  <tr key={item.paymentId}>
-                    <td>{item.modified}</td>
-                    {showGateWay && <td>{item?.gateWayData?.name}</td>}
-                    <td>{item.paymentId}</td>
-                    <td>{toMoney(item.amount)} USD</td>
-                  </tr>
-                ))}
+                {transactionsLists
+                  .sort((a, b) => (moment(a.modified).isAfter(b.modified) ? 1 : -1))
+                  .map((item) => (
+                    <tr key={item.paymentId}>
+                      <td>{moment(item.modified).format('DD.MM.YYYY')}</td>
+                      {showGateWay && <td>{item?.gateWayData?.name}</td>}
+                      <td>{item.paymentId}</td>
+                      <td>{toMoney(item.amount)} USD</td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
